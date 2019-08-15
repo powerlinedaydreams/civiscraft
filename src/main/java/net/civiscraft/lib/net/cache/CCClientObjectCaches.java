@@ -11,6 +11,8 @@ public class CCClientObjectCaches
 	static final HashMap<CacheType, ClientObjectCache<?,?>> CACHES = new HashMap<>();
 	static boolean isClientConnected = false;
 	
+	private CCClientObjectCaches() {}
+	
 	public static void registerCache(CacheType type, ClientObjectCache<?, ?> cache)
 	{
 		if(Loader.instance().hasReachedState(LoaderState.POSTINITIALIZATION))

@@ -2,7 +2,6 @@ package net.civiscraft.lib.event;
 
 import net.civiscraft.lib.CCLibProxy;
 import net.civiscraft.lib.log.CCLog;
-import net.civiscraft.lib.net.cache.CCClientObjectCaches;
 import net.civiscraft.world.worldsaveddata.TileList;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -36,7 +35,7 @@ public class LibEventHandler
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent e)
 	{
-		CCClientObjectCaches.onClientTick();
+		//CCClientObjectCaches.onClientTick();
 	}
 	
 	@SubscribeEvent
@@ -44,13 +43,13 @@ public class LibEventHandler
 	public void onClientJoinServer(ClientConnectedToServerEvent e)
 	{
 		CCLog.logger.info("ClientLoggedIn");
-		CCClientObjectCaches.onClientJoinServer();
+		//CCClientObjectCaches.onClientJoinServer();
 	}
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onClientLeaveServer(ClientDisconnectionFromServerEvent e)
 	{
-		CCClientObjectCaches.onClientLeaveServer();
+		//CCClientObjectCaches.onClientLeaveServer();
 	}
 }

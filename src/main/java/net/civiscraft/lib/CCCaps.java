@@ -1,6 +1,6 @@
 package net.civiscraft.lib;
 
-import net.civiscraft.lib.cap.intel.CapPlayerIntel;
+import net.civiscraft.core.cap.intel.CapPlayerIntel;
 
 public class CCCaps
 {

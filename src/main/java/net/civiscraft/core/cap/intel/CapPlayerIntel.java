@@ -1,4 +1,4 @@
-package net.civiscraft.lib.cap.intel;
+package net.civiscraft.core.cap.intel;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -29,59 +29,64 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CapPlayerIntel implements ICap
 {
-	@CapabilityInject(IIntel.class)
-	public static final Capability<IIntel> CAP = null;
-	
+	@CapabilityInject(PlayerIntel.class)
+	public static final Capability<PlayerIntel> CAP = null;
+
 	public static final EnumFacing DEFAULT_FACING = null;
-	
+
 	public static final ResourceLocation ID = new ResourceLocation(CCLib.MODID, "PlayerIntel");
 
-	public static void register() {
-		CapabilityManager.INSTANCE.register(IIntel.class, new Capability.IStorage<IIntel>() {
+	public static void register()
+	{
+		CapabilityManager.INSTANCE.register(PlayerIntel.class, new Capability.IStorage<PlayerIntel>()
+		{
 			@Override
-			public NBTBase writeNBT(Capability<IIntel> capability, IIntel instance, EnumFacing side) 
+			public NBTBase writeNBT(Capability<PlayerIntel> capability, PlayerIntel instance, EnumFacing side)
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
+				nbt.setUniqueId("playerEmpire", instance.getPlayerEmpire());
 				NBTTagList empireList = new NBTTagList();
 				NBTTagList resourceList = new NBTTagList();
 				ArrayList<UUID> empires = instance.getEmpires();
 				ArrayList<Resource> resources = instance.getResources();
-				
-				for(UUID empire : empires)
+
+				for (UUID empire : empires)
 				{
 					NBTTagCompound tag = new NBTTagCompound();
-					
+
 					tag.setUniqueId("uuid", empire);
 					empireList.appendTag(tag);
 				}
-				
-				for(Resource resource : resources)
+
+				for (Resource resource : resources)
 				{
 					resourceList.appendTag(resource.writeNBT());
 				}
-				
+
 				nbt.setTag("empires", empireList);
 				nbt.setTag("resources", resourceList);
-				
+
 				return nbt;
 			}
 
 			@Override
-			public void readNBT(Capability<IIntel> capability, IIntel instance, EnumFacing side, NBTBase nbtBase) 
+			public void readNBT(Capability<PlayerIntel> capability, PlayerIntel instance, EnumFacing side,
+					NBTBase nbtBase)
 			{
 				NBTTagCompound nbt = (NBTTagCompound) nbtBase;
+				instance.setPlayerEmpire(nbt.getUniqueId("playerEmpire"));
 				NBTTagList empireList = nbt.getTagList("empires", NBTType.NBTTagCompound.i);
 				NBTTagList resourceList = nbt.getTagList("resources", NBTType.NBTTagCompound.i);
 				ArrayList<UUID> empires = new ArrayList<UUID>(empireList.tagCount());
 				ArrayList<Resource> resources = new ArrayList<Resource>(resourceList.tagCount());
-				
-				for(NBTBase base : empireList)
+
+				for (NBTBase base : empireList)
 				{
 					NBTTagCompound tag = (NBTTagCompound) base;
 					empires.add(tag.getUniqueId("uuid"));
 				}
-				
-				for(NBTBase base : resourceList)
+
+				for (NBTBase base : resourceList)
 				{
 					NBTTagCompound tag = (NBTTagCompound) base;
 					resources.add(Resource.readNBT(tag));
@@ -94,61 +99,74 @@ public class CapPlayerIntel implements ICap
 	}
 
 	/**
-	 * Get the {@link IIntel} from the specified entity.
+	 * Get the {@link PlayerIntel} from the specified entity.
 	 *
-	 * @param entity The entity
+	 * @param entity
+	 *            The entity
 	 * @return The ITile
 	 */
 	@Nullable
-	public static IIntel getIntel(EntityPlayer player) {
+	public static PlayerIntel getIntel(EntityPlayer player)
+	{
 		return CapUtil.getCapability(player, CAP, DEFAULT_FACING);
 	}
 
 	/**
-	 * Create a provider for the specified {@link IIntel} instance.
+	 * Create a provider for the specified {@link PlayerIntel} instance.
 	 *
-	 * @param maxHealth The ITile
+	 * @param maxHealth
+	 *            The ITile
 	 * @return The provider
 	 */
-	public static ICapabilityProvider createProvider(IIntel playerTiles) {
+	public static ICapabilityProvider createProvider(PlayerIntel playerTiles)
+	{
 		return new CapProvider<>(CAP, DEFAULT_FACING, playerTiles);
 	}
 
 	/**
 	 * Format a max health value.
 	 *
-	 * @param maxHealth The max health value
+	 * @param maxHealth
+	 *            The max health value
 	 * @return The formatted text.
 	 */
 
 	/**
-	 * Event handler for the {@link IIntel} capability.
+	 * Event handler for the {@link PlayerIntel} capability.
 	 */
-	public static class EventHandler {
+	public static class EventHandler
+	{
 		/**
-		 * Attach the {@link IIntel} capability to all living entities.
+		 * Attach the {@link PlayerIntel} capability to all living entities.
 		 *
-		 * @param event The event
+		 * @param event
+		 *            The event
 		 */
 		@SubscribeEvent
-		public void attachCapabilities(AttachCapabilitiesEvent<Entity> e) {
-			if (e.getObject() instanceof EntityPlayer) {
+		public void attachCapabilities(AttachCapabilitiesEvent<Entity> e)
+		{
+			if(e.getObject() instanceof EntityPlayer)
+			{
 				final PlayerIntel playerIntel = new PlayerIntel((EntityPlayer) e.getObject());
 				e.addCapability(ID, createProvider(playerIntel));
 			}
 		}
 
 		/**
-		 * Copy the player's bonus max health when they respawn after dying or returning from the end.
+		 * Copy the player's bonus max health when they respawn after dying or returning
+		 * from the end.
 		 *
-		 * @param event The event
+		 * @param event
+		 *            The event
 		 */
 		@SubscribeEvent
-		public void playerClone(PlayerEvent.Clone e) {
-			final IIntel oldIntel = getIntel(e.getOriginal());
-			final IIntel newIntel = getIntel(e.getEntityPlayer());
+		public void playerClone(PlayerEvent.Clone e)
+		{
+			final PlayerIntel oldIntel = getIntel(e.getOriginal());
+			final PlayerIntel newIntel = getIntel(e.getEntityPlayer());
 
-			if (newIntel != null && oldIntel != null) {
+			if(newIntel != null && oldIntel != null)
+			{
 				newIntel.set(oldIntel);
 			}
 		}

@@ -2,7 +2,6 @@ package net.civiscraft.lib;
 
 import net.civiscraft.lib.chunkload.ChunkLoader;
 import net.civiscraft.lib.log.CCLog;
-import net.civiscraft.lib.net.cache.CCClientObjectCaches;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -39,8 +38,6 @@ public class CCLib
 		CCLibProxy.getProxy().fmlPreInit();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, CCLibProxy.getProxy());
-		
-		CCClientObjectCaches.fmlPreInit();
 	}
 	
 	@Mod.EventHandler
@@ -53,6 +50,5 @@ public class CCLib
 	public static void postInit(FMLPostInitializationEvent e)
 	{
 		ForgeChunkManager.setForcedChunkLoadingCallback(INSTANCE, new ChunkLoader());
-		CCClientObjectCaches.fmlPostInit();
 	}
 }

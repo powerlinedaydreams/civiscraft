@@ -6,10 +6,6 @@ import java.io.InputStream;
 
 import net.civiscraft.lib.client.render.chrome.ChromeRenderer;
 import net.civiscraft.lib.event.LibEventHandler;
-import net.civiscraft.lib.net.MessageManager;
-import net.civiscraft.lib.net.MessageManager.MessageID;
-import net.civiscraft.lib.net.cache.MessageObjectCacheRequest;
-import net.civiscraft.lib.net.cache.MessageObjectCacheResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.IResource;
@@ -41,8 +37,6 @@ public class CCLibProxy implements IGuiHandler
 	void fmlPreInit()
 	{
 		MinecraftForge.EVENT_BUS.register(new LibEventHandler());
-		MessageManager.addType(MessageID.CCLIB_CACHE_REQUEST, MessageObjectCacheRequest.class, MessageObjectCacheRequest.HANDLER, Side.SERVER);
-		MessageManager.addType(MessageID.CCLIB_CACHE_RESPONSE, MessageObjectCacheResponse.class, MessageObjectCacheResponse.HANDLER, Side.CLIENT);
 		CCCaps.registerCaps();
 	}
 	

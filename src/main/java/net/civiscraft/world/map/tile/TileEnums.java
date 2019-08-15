@@ -6,15 +6,15 @@ public class TileEnums
 	{
 		PLAINS("plains"),
 		DESERT("desert");
-		
-		private String typeName;
-		
+
+		public String typeName;
+
 		private Biome(String s)
 		{
 			typeName = s;
 		}
 	}
-	
+
 	public enum Terrain
 	{
 		HILLS("hills"),
@@ -22,22 +22,22 @@ public class TileEnums
 		LAVALAKE("lavalake"),
 		RAVINE("ravine"),
 		MOUNTAINS("mountains");
-		
-		private String typeName;
-		
+
+		public String typeName;
+
 		private Terrain(String s)
 		{
 			typeName = s;
 		}
 	}
-	
+
 	public enum Structure
 	{
 		FARM("farm"),
 		CITY("city");
-		
-		private String typeName;
-		
+
+		public String typeName;
+
 		private Structure(String s)
 		{
 			typeName = s;

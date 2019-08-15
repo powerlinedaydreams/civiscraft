@@ -1,12 +1,6 @@
 package net.civiscraft.world;
 
-import net.civiscraft.lib.client.render.chrome.ChromeRenderer;
-import net.civiscraft.lib.net.cache.CCClientObjectCaches;
-import net.civiscraft.lib.net.cache.CCClientObjectCaches.CacheType;
-import net.civiscraft.world.client.tile.render.chrome.TileChromeRenderer;
 import net.civiscraft.world.event.WorldEventHandler;
-import net.civiscraft.world.net.ClientTileCache;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,8 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CCWorldProxy implements IGuiHandler
 {
-	public static final ClientTileCache TILE_CACHE = new ClientTileCache();
-	public static TileChromeRenderer CT_RENDERER;
+	//public static TileChromeRenderer CT_RENDERER;
 	
 	@SidedProxy(modId = CCWorld.MODID)
 	private static CCWorldProxy proxy;
@@ -32,7 +25,7 @@ public class CCWorldProxy implements IGuiHandler
 	{
 		MinecraftForge.EVENT_BUS.register(new WorldEventHandler());
 		
-		CCClientObjectCaches.registerCache(CacheType.CTILE, TILE_CACHE);
+		//CCClientObjectCaches.registerCache(CacheType.CTILE, TILE_CACHE);
 	}
 	
 	void fmlInit() {}
@@ -74,8 +67,8 @@ public class CCWorldProxy implements IGuiHandler
 		public void fmlPreInit()
 		{
 			super.fmlPreInit();
-			CT_RENDERER = new TileChromeRenderer(Minecraft.getMinecraft());
-			ChromeRenderer.register(CT_RENDERER);
+			//CT_RENDERER = new TileChromeRenderer(Minecraft.getMinecraft());
+			//ChromeRenderer.register(CT_RENDERER);
 		}
 		
 		@Override

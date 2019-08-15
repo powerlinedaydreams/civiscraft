@@ -12,7 +12,7 @@ public class TileWatchEvent extends Event
 	private final ArrayList<TilePos> tiles;
 	public final boolean multiple;
 	private final EntityPlayerMP player;
-	
+
 	public TileWatchEvent(TilePos tile, EntityPlayerMP player)
 	{
 		this.tile = tile;
@@ -20,7 +20,7 @@ public class TileWatchEvent extends Event
 		this.multiple = false;
 		this.player = player;
 	}
-	
+
 	public TileWatchEvent(ArrayList<TilePos> tiles, EntityPlayerMP player)
 	{
 		this.tile = null;
@@ -28,7 +28,7 @@ public class TileWatchEvent extends Event
 		this.multiple = true;
 		this.player = player;
 	}
-	
+
 	public TilePos getTile()
 	{
 		return tile;
@@ -38,45 +38,45 @@ public class TileWatchEvent extends Event
 	{
 		return tiles;
 	}
-	
+
 	public EntityPlayerMP getPlayer()
 	{
 		return player;
 	}
-	
+
 	public static class Watch extends TileWatchEvent
 	{
 		public Watch(TilePos tile, EntityPlayerMP player)
 		{
 			super(tile, player);
 		}
-		
+
 		public Watch(ArrayList<TilePos> tiles, EntityPlayerMP player)
 		{
 			super(tiles, player);
 		}
 	}
-	
+
 	public static class UnWatch extends TileWatchEvent
 	{
 		public UnWatch(TilePos tile, EntityPlayerMP player)
 		{
 			super(tile, player);
 		}
-		
+
 		public UnWatch(ArrayList<TilePos> tiles, EntityPlayerMP player)
 		{
 			super(tiles, player);
 		}
 	}
-	
+
 	public static class Seen extends TileWatchEvent
 	{
 		public Seen(TilePos tile, EntityPlayerMP player)
 		{
 			super(tile, player);
 		}
-		
+
 		public Seen(ArrayList<TilePos> tiles, EntityPlayerMP player)
 		{
 			super(tiles, player);

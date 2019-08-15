@@ -11,6 +11,8 @@ public class CCObjectCaches
 	static final HashMap<String, NetworkedObjectCache<?>> CACHES = new HashMap<String, NetworkedObjectCache<?>>();
 	static boolean isClientConnected = false;
 	
+	private CCObjectCaches() {}
+	
 	public static void registerCache(NetworkedObjectCache<?> cache)
 	{
 		String string = cache.getCacheName();
