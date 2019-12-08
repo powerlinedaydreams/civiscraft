@@ -20,7 +20,7 @@ public class ClientDisplayData
 	public Map<TilePos, ClientTile> tiles = new HashMap<TilePos, ClientTile>();
 	public Map<UUID, ClientEmpire> empires = new HashMap<UUID, ClientEmpire>();
 	@Nullable
-	public UUID playerEmpire = Empire.nullEmpire;
+	public UUID playerEmpire = Empire.NULL;
 
 	public static ClientDisplayData getData()
 	{

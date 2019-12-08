@@ -1,7 +1,10 @@
 package net.civiscraft.world.map.tile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 import net.civiscraft.core.tile.Yield;
@@ -9,7 +12,6 @@ import net.civiscraft.lib.CCLib;
 import net.civiscraft.lib.log.CCLog;
 import net.civiscraft.lib.util.NBTUtil;
 import net.civiscraft.world.biome.BiomeCC;
-import net.civiscraft.world.biome.PlainsBiomeCC;
 import net.civiscraft.world.map.tile.TileEnums.Structure;
 import net.civiscraft.world.map.tile.TileEnums.Terrain;
 import net.civiscraft.world.resource.Resource;
@@ -19,8 +21,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -31,7 +35,7 @@ public class Tile
 	private final World world;
 	private final ChunkPos[][] chunks;
 	private TileOwner owner;
-	private BiomeCC biome;
+	private BiomeCC biome = null;
 	private ArrayList<TileEnums.Terrain> terrain;
 	private ArrayList<TileEnums.Structure> structures;
 	private TreeMap<Resource, Integer> resources;
@@ -47,8 +51,8 @@ public class Tile
 		this.world = world;
 		this.chunkTicket = ForgeChunkManager.requestTicket(CCLib.INSTANCE, world, ForgeChunkManager.Type.NORMAL);
 		this.chunks = generateChunks();
-		this.biome = generateBiome();
 		this.terrain = generateTerrain();
+		this.biome = generateBiome();
 		this.structures = generateStructures();
 		this.yield = generateYield();
 		this.owner = new TileOwner(this);
@@ -77,20 +81,7 @@ public class Tile
 
 	private ChunkPos[][] generateChunks()
 	{
-		ChunkPos[][] chunkArray = new ChunkPos[4][4];
-
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				int z = pos.z * 4 + j;
-				int x = pos.x * 4 - 2 * (pos.z % 2);
-
-				chunkArray[i][j] = new ChunkPos(x, z);
-			}
-		}
-
-		return chunkArray;
+		return pos.generateChunks();
 	}
 
 	public void force()
@@ -132,7 +123,68 @@ public class Tile
 
 	private BiomeCC generateBiome()
 	{
-		return PlainsBiomeCC.getInstance();
+		Map<BiomeCC, Integer> biomeTracker = new HashMap<BiomeCC, Integer>(BiomeCC.BIOMES.size());
+		BiomeCC plains = BiomeCC.BIOMES.get("plains");
+
+		for (BiomeCC biome : BiomeCC.BIOMES.values())
+		{
+			biomeTracker.put(biome, 0);
+		}
+
+		biomeTracker.replace(plains, 1);
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				ChunkPos chunk = chunks[i][j];
+
+				for (int x = 0; x < 16; x++)
+				{
+					for (int z = 0; z < 16; z++)
+					{
+						BlockPos blockPos = new BlockPos(chunk.x * 16 + x, 0, chunk.z * 16 + z);
+						Biome _biome = world.getBiome(blockPos);
+						String blockBiome = _biome.getBiomeName();
+						Boolean biomeFound = false;
+
+						Iterator<Map.Entry<BiomeCC, Integer>> iterator = biomeTracker.entrySet().iterator();
+
+						while (iterator.hasNext())
+						{
+							Map.Entry<BiomeCC, Integer> entry = iterator.next();
+							String[] entryBiomes = entry.getKey().minecraftBiomes;
+
+							for (int k = 0; k < entryBiomes.length; k++)
+							{
+								if(blockBiome.equals(entryBiomes[k]))
+								{
+									entry.setValue(entry.getValue() + 1);
+									biomeFound = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		BiomeCC currentBiome = plains;
+		int currentMax = 0;
+
+		for (Map.Entry<BiomeCC, Integer> entry : biomeTracker.entrySet())
+		{
+			if(entry.getValue() > currentMax)
+			{
+				currentMax = entry.getValue();
+				currentBiome = entry.getKey();
+			}
+		}
+
+		CCLog.logger.info(currentBiome.name);
+
+		return currentBiome;
 	}
 
 	private ArrayList<TileEnums.Terrain> generateTerrain()
@@ -161,7 +213,10 @@ public class Tile
 	{
 		nbt.setLong("pos", pos.toLong());
 		nbt = owner.writeToNBT(nbt);
-		nbt.setString("biome", biome.name);
+		if(biome != null)
+		{
+			nbt.setString("biome", biome.name);
+		}
 
 		int size = terrain.size();
 		nbt.setInteger("terrainSize", size);

@@ -207,8 +207,8 @@ public class ClientTile extends CCClientObject
 		buf.writeLong(pos.toLong());
 		buf.writeLong(playerId.getMostSignificantBits());
 		buf.writeLong(playerId.getLeastSignificantBits());
-		buf.writeShort(0);//biome.name.length());
-		//buf.writeCharSequence(biome.name, Charset.forName("UTF-8"));
+		buf.writeShort(biome.name.length());
+		buf.writeCharSequence(biome.name, Charset.forName("UTF-8"));
 
 		/*buf.writeShort(terrain.size());
 		for (Terrain ter : terrain)
@@ -232,7 +232,7 @@ public class ClientTile extends CCClientObject
 			buf.writeInt(entry.getValue());
 		}
 
-		boolean ownerUnknown = Empire.nullEmpire.equals(owner.getOwner());
+		boolean ownerUnknown = Empire.NULL.equals(owner.getOwner());
 		buf.writeBoolean(ownerUnknown);
 
 		if(!ownerUnknown)
@@ -257,7 +257,7 @@ public class ClientTile extends CCClientObject
 		int length = buf.readShort();
 		String str = buf.readCharSequence(length, Charset.forName("UTF-8")).toString();
 
-		BiomeCC _biome = null;//BiomeCC.BIOMES.get(str);
+		BiomeCC _biome = BiomeCC.BIOMES.get(str);
 
 		/*int size = buf.readShort();
 		ArrayList<Terrain> _terrain = new ArrayList<Terrain>(size);

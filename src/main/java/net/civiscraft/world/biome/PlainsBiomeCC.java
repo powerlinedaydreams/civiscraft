@@ -2,18 +2,12 @@ package net.civiscraft.world.biome;
 
 public class PlainsBiomeCC extends BiomeCC
 {
-	private PlainsBiomeCC()
-	{
-		super("plains");
-	}
+	private static String[] biomes = { "plains", "mutated_plains", "savanna", "savanna_rock", "mesa", "mesa_rock",
+			"mesa_clear_rock", "mutated_savanna", "mutated_savanna_rock", "mutated_mesa", "mutated_mesa_rock",
+			"mutated_mesa_clear_rock" };
 
-	public static PlainsBiomeCC getInstance()
+	public PlainsBiomeCC()
 	{
-		if(INSTANCE == null)
-		{
-			INSTANCE = new PlainsBiomeCC();
-		}
-
-		return (PlainsBiomeCC) INSTANCE;
+		super("plains", biomes);
 	}
 }

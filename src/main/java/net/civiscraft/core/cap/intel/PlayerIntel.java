@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class PlayerIntel implements IIntel
 {
 	EntityPlayer player;
-	private UUID playerEmpire = Empire.nullEmpire;
+	private UUID playerEmpire = Empire.NULL;
 	private ArrayList<UUID> empires = new ArrayList<UUID>();
 	private ArrayList<Resource> resources = new ArrayList<Resource>();
 	private HashSet<TilePos> watchedTiles = new HashSet<TilePos>();

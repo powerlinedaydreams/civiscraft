@@ -1,6 +1,13 @@
 package net.civiscraft.world;
 
 import net.civiscraft.lib.CCLib;
+import net.civiscraft.lib.log.CCLog;
+import net.civiscraft.world.biome.BiomeCC;
+import net.civiscraft.world.biome.DesertBiomeCC;
+import net.civiscraft.world.biome.ForestBiomeCC;
+import net.civiscraft.world.biome.OceanBiomeCC;
+import net.civiscraft.world.biome.PlainsBiomeCC;
+import net.civiscraft.world.event.BiomeCCRegistryEvent;
 import net.civiscraft.world.net.TileAddMessage;
 import net.civiscraft.world.net.TileAddMessageHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -29,6 +36,7 @@ public class CCWorld
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, CCWorldProxy.getProxy());
 		NETWORK_CHANNEL.registerMessage(TileAddMessageHandler.class, TileAddMessage.class, 0, Side.CLIENT);
+		registerBiomes();
 	}
 
 	@Mod.EventHandler
@@ -41,5 +49,16 @@ public class CCWorld
 	public static void postInit(FMLPostInitializationEvent e)
 	{
 
+	}
+
+	private static void registerBiomes()
+	{
+		BiomeCC.register(new PlainsBiomeCC());
+		BiomeCC.register(new DesertBiomeCC());
+		BiomeCC.register(new ForestBiomeCC());
+		BiomeCC.register(new OceanBiomeCC());
+
+		CCLog.logger.info("Biomes: " + BiomeCC.BIOMES.size());
+		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new BiomeCCRegistryEvent.Completed());
 	}
 }

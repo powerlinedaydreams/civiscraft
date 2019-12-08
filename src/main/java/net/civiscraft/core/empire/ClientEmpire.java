@@ -1,6 +1,8 @@
 package net.civiscraft.core.empire;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -19,15 +21,15 @@ public class ClientEmpire
 	@Nullable
 	public String name;
 	@Nullable
-	private UUID player;
+	private List<UUID> players;
 	private boolean isExtant;
 	private Map<TilePos, Integer> tiles = new TreeMap<TilePos, Integer>();
 
-	public ClientEmpire(UUID id, String name, UUID player, boolean isExtant, Map<TilePos, Integer> tiles)
+	public ClientEmpire(UUID id, String name, List<UUID> players, boolean isExtant, Map<TilePos, Integer> tiles)
 	{
 		this.id = id;
 		this.name = name;
-		this.player = player;
+		this.players = players;
 		this.isExtant = isExtant;
 		this.tiles = tiles;
 	}
@@ -37,7 +39,7 @@ public class ClientEmpire
 		PlayerIntel intel = (PlayerIntel) player.getCapability(CapPlayerIntel.CAP, null);
 		this.id = empire.id;
 		this.name = intel.getEmpires().contains(this.id) ? empire.name : null;
-		this.player = empire.getPlayer();
+		this.players = empire.getPlayers();
 		this.isExtant = empire.exists();
 		for (Map.Entry<TilePos, Integer> entry : empire.getTiles().entrySet())
 		{
@@ -48,9 +50,9 @@ public class ClientEmpire
 		}
 	}
 
-	public UUID getPlayer()
+	public List<UUID> getPlayers()
 	{
-		return player;
+		return players;
 	}
 
 	public boolean exists()
@@ -73,11 +75,16 @@ public class ClientEmpire
 			name_ = buf.readCharSequence(length, Charset.forName("UTF-8")).toString();
 		}
 
-		UUID player_ = null;
+		List<UUID> players_ = null;
 
 		if(buf.readBoolean())
 		{
-			player_ = new UUID(buf.readLong(), buf.readLong());
+			players_ = new ArrayList<UUID>();
+
+			for (int i = 0; i < buf.readInt(); i++)
+			{
+				players_.add(new UUID(buf.readLong(), buf.readLong()));
+			}
 		}
 
 		boolean isExtant_ = buf.readBoolean();
@@ -92,7 +99,7 @@ public class ClientEmpire
 			tiles_.put(pos, time);
 		}
 
-		return new ClientEmpire(id_, name_, player_, isExtant_, tiles_);
+		return new ClientEmpire(id_, name_, players_, isExtant_, tiles_);
 	}
 
 	public void toBytes(ByteBuf buf)
@@ -107,11 +114,15 @@ public class ClientEmpire
 			buf.writeCharSequence(name, Charset.forName("UTF-8"));
 		}
 
-		buf.writeBoolean(player != null);
-		if(player != null)
+		buf.writeBoolean(players != null);
+		if(players != null)
 		{
-			buf.writeLong(player.getMostSignificantBits());
-			buf.writeLong(player.getLeastSignificantBits());
+			buf.writeInt(players.size());
+			for (UUID player : players)
+			{
+				buf.writeLong(player.getMostSignificantBits());
+				buf.writeLong(player.getLeastSignificantBits());
+			}
 		}
 
 		buf.writeBoolean(isExtant);

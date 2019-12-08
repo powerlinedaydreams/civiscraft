@@ -2,7 +2,6 @@ package net.civiscraft.core;
 
 import java.io.File;
 
-import net.civiscraft.core.command.EmpireCommand;
 import net.civiscraft.core.net.EmpireRequestMessage;
 import net.civiscraft.core.net.EmpireRequestMessageHandler;
 import net.civiscraft.core.net.EmpireUpdateMessage;
@@ -18,12 +17,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = CCCore.MODID, name = "CivisCraft Core", version = CCLib.VERSION)
+@Mod(modid = CCCore.MODID, name = "CivisCraft Core", version = CCLib.VERSION, guiFactory = "net.civiscraft.core.CCCoreGui")
 
 public class CCCore
 {
@@ -69,11 +67,5 @@ public class CCCore
 	{
 		CCCoreProxy.getProxy().postInit();
 		CCCoreConfig.postInit();
-	}
-
-	@Mod.EventHandler
-	public static void serverLoad(FMLServerStartingEvent e)
-	{
-		e.registerServerCommand(new EmpireCommand());
 	}
 }

@@ -2,6 +2,7 @@ package net.civiscraft.core.client.gui;
 
 import net.civiscraft.core.CCCore;
 import net.civiscraft.core.client.ClientDisplayData;
+import net.civiscraft.world.client.tile.ClientTile;
 import net.civiscraft.world.map.tile.TilePos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -66,11 +67,12 @@ public class EmpireInfoGui extends GuiScreen
 		int x = minecraft.player.chunkCoordX;
 		int z = minecraft.player.chunkCoordZ;
 		TilePos tp = new TilePos(new ChunkPos(x, z));
+		ClientTile cTile = ClientDisplayData.getData().tiles.get(tp);
 
 		drawCenteredString(minecraft.fontRenderer, tp.toString(), width / 4, height / 16,
 				Integer.parseInt("FFAA00", 16));
-		drawCenteredString(minecraft.fontRenderer, ClientDisplayData.getData().tiles.size() + "", width / 4 * 3,
-				height / 16, Integer.parseInt("0000FF", 16));
+		drawCenteredString(minecraft.fontRenderer, cTile == null ? "" : cTile.biome.name, width / 4 * 3, height / 16,
+				Integer.parseInt("0000FF", 16));
 	}
 
 	public static void moveTopBarLeft(float offset)

@@ -159,10 +159,10 @@ public class TilePos implements Comparable<TilePos>, ICacheable<TilePos>
 
 		for (int i = 0; i < 4; i++)
 		{
-			for (int j = 0; j < 2; j++)
+			for (int j = 0; j < 4; j++)
 			{
 				int cz = z * 4 + j;
-				int cx = x * 4 - 2 * (z % 2);
+				int cx = (x * 4 - 2 * (z % 2)) + i;
 
 				chunkArray[i][j] = new ChunkPos(cx, cz);
 			}

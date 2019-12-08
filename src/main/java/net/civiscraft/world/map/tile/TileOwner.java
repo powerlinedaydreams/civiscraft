@@ -55,7 +55,7 @@ public class TileOwner
 
 		this.pos = pos;
 		this.isOwned = true;
-		this.owner = Empire.nullEmpire;
+		this.owner = Empire.NULL;
 	}
 
 	private void checkOwner()

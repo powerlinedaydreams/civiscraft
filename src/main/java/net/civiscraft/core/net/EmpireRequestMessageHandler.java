@@ -30,15 +30,15 @@ public class EmpireRequestMessageHandler implements IMessageHandler<EmpireReques
 			player.world.getMinecraftServer().addScheduledTask(() ->
 				{
 					PlayerIntel intel = player.getCapability(CapPlayerIntel.CAP, null);
-					if(intel.getPlayerEmpire().equals(Empire.nullEmpire))
+					if(intel.getPlayerEmpire().equals(Empire.NULL))
 					{
 						TilePos tilePos = new TilePos(new ChunkPos(player.chunkCoordX, player.chunkCoordZ));
 						UUID id = UUID.randomUUID();
-						while (id == Empire.nullEmpire)
+						while (id == Empire.NULL)
 						{
 							id = UUID.randomUUID();
 						}
-						Empire playerEmpire = new Empire(id, "empireName", player.getUniqueID(), tilePos, player.world);
+						Empire playerEmpire = new Empire(id, player.world);
 						intel.setPlayerEmpire(playerEmpire.id);
 						CCCore.NETWORK_CHANNEL
 								.sendTo(new PlayerEmpireAddMessage(new ClientEmpire(playerEmpire, player)), player);
@@ -50,7 +50,7 @@ public class EmpireRequestMessageHandler implements IMessageHandler<EmpireReques
 		player.world.getMinecraftServer().addScheduledTask(() ->
 			{
 				PlayerIntel intel = player.getCapability(CapPlayerIntel.CAP, null);
-				if(!intel.getPlayerEmpire().equals(Empire.nullEmpire))
+				if(!intel.getPlayerEmpire().equals(Empire.NULL))
 				{
 					CCLog.logger.info(intel.getPlayerEmpire());
 					CCLog.logger.info(

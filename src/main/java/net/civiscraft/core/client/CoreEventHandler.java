@@ -2,6 +2,7 @@ package net.civiscraft.core.client;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import net.civiscraft.core.CCCore;
 import net.civiscraft.core.cap.intel.CapPlayerIntel;
@@ -27,6 +28,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -39,10 +41,18 @@ public class CoreEventHandler
 	private static boolean rightLock = false;
 	private static boolean empireCheck = false;
 	private static VanillaGui vanillaGui = null;
+	private static PrimitiveTileMarker tileMarker = new PrimitiveTileMarker(Minecraft.getMinecraft());
+
+	@SubscribeEvent
+	public void onRenderWorld(RenderWorldLastEvent e)
+	{
+		tileMarker.render(e.getPartialTicks(), 10L);
+	}
 
 	@SubscribeEvent
 	public void onPreRenderGameOverlay(RenderGameOverlayEvent.Pre e)
 	{
+
 		return;
 		/*
 		if(e.getType() == ElementType.ALL)
@@ -114,7 +124,7 @@ public class CoreEventHandler
 			{
 				EntityPlayer player = Minecraft.getMinecraft().player;
 				player.sendMessage(new TextComponentString("Create Empire Key Pressed"));
-				if(ClientDisplayData.getData().playerEmpire == Empire.nullEmpire)
+				if(ClientDisplayData.getData().playerEmpire == Empire.NULL)
 				{
 					CCCore.NETWORK_CHANNEL.sendToServer(new EmpireRequestMessage(true));
 				}
@@ -127,7 +137,7 @@ public class CoreEventHandler
 				EntityPlayer player = minecraft.player;
 				player.sendMessage(new TextComponentString("Claim Tile Key Pressed"));
 
-				if(ClientDisplayData.getData().playerEmpire == Empire.nullEmpire)
+				if(ClientDisplayData.getData().playerEmpire == Empire.NULL)
 				{
 					player.sendMessage(new TextComponentString("No active empire. Tile claim failed."));
 					failed = true;
@@ -202,9 +212,11 @@ public class CoreEventHandler
 
 		CCLog.logger.info(empire.getTiles().size());
 
-		EntityPlayerMP player = (EntityPlayerMP) world.getPlayerEntityByUUID(empire.getPlayer());
-
-		PlayerIntel intel = player.getCapability(CapPlayerIntel.CAP, null);
-		intel.setPlayerEmpire(Empire.nullEmpire);
+		for (UUID playerID : empire.getPlayers())
+		{
+			EntityPlayerMP player = (EntityPlayerMP) world.getPlayerEntityByUUID(playerID);
+			PlayerIntel intel = player.getCapability(CapPlayerIntel.CAP, null);
+			intel.setPlayerEmpire(Empire.NULL);
+		}
 	}
 }
